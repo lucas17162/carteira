@@ -1,0 +1,5 @@
+- name: Build com Buildozer Action
+  uses: ArtemSBulgakov/buildozer-action@v1
+  with:
+    workdir: .
+    buildozer_version: stable
