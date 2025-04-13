@@ -1,0 +1,37 @@
+name: Build APK
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v2
+
+      - name: Instalar dependências
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y zip unzip openjdk-17-jdk python3-pip
+          pip3 install --user --upgrade Cython virtualenv
+          pip3 install --user --upgrade buildozer
+
+      - name: Configurar ambiente
+        run: |
+          echo 'export PATH=$PATH:~/.local/bin/' >> ~/.bashrc
+          source ~/.bashrc
+
+      - name: Compilar APK com Buildozer
+        run: |
+          yes | ~/.local/bin/buildozer -v android debug
+
+      - name: Upload do APK
+        uses: actions/upload-artifact@v2
+        with:
+          name: app-release
+          path: bin/*.apk
